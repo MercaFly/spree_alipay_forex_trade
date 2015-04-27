@@ -1,12 +1,5 @@
-
-<% if @order.currency == 'CNY' || @order.currency == 'RMB' %>
-  <%=link_to_partner_trade(payment_method)%> 
-  <br/>
-  <%= "#{I18n.t('spree.alipay.click_and_pay')} (#{I18n.t('spree.alipay.partner_trade')})"%>
-<% else %>
-  <%= I18n.t('spree.alipay.error_non_rmb')  %>
-<% end %>
+<%= link_to_partner_trade(payment_method) %>
 
 <script>
   SpreeAlipayPayment.paymentMethodID = "<%= payment_method.id %>"  
- </script>
+</script>

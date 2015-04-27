@@ -68,15 +68,23 @@ module Spree
         :logistics_fee     => shipping_cost,
         :logistics_payment => 'BUYER_PAY',
         :price             =>  amount,  
+        :currency          => "EUR",        
         :quantity          => 1,
         :discount          => adjustment_costs,
         :return_url        => return_url, # https://writings.io/orders/20130801000001
         :notify_url        => notify_url  # https://writings.io/orders/20130801000001/alipay_notify
       }
-
+      options = {
+        :out_trade_no      => out_trade_no,
+        :subject           => subject,
+        :currency          => "EUR",
+        :total_fee         => amount + shipping_cost ,
+        :return_url        => return_url,
+        :notify_url        => notify_url
+      }
     
     
-      return  provider.create_partner_trade_by_buyer_url(options)
+      return  provider.create_forex_trade(options)
 
     end
 

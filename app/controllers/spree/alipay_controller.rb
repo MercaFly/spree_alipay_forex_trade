@@ -8,7 +8,8 @@ module Spree
       payment = Spree::Payment.create({:order_id => order.id, :amount => order.amount,  :payment_method_id=> payment_method.id})
       payment.started_processing!
 
-      subject = I18n.t("alipay.store.#{current_store.name}", default: current_store.name) + ", ##{order.number}"
+      subject = I18n.t("alipay.store.#{current_store.name.downcase}", default: current_store.name) + ", ##{order.number}"
+      binding.pry
       partner_trade = payment_method.set_partner_trade( payment.identifier, order, spree.order_url(order), notify_alipay_url, {subject: subject})
       redirect_to partner_trade
     end

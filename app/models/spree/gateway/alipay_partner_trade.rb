@@ -2,14 +2,10 @@ require 'alipay'
 
 module Spree
   class Gateway::AlipayPartnerTrade < Gateway
-
-
     preference :pid, :string
     preference :key, :string
     preference :seller_email, :string
-    
-    
-    
+
     def supports?(source)
       true
     end
@@ -39,46 +35,46 @@ module Spree
     def purchase(money, source, gateway_options)
       nil
     end
-    
+
 
     def set_partner_trade(out_trade_no, order, return_url, notify_url, gateway_options={})
       raise unless preferred_pid && preferred_key && preferred_seller_email
       amount = order.amount
       tax_adjustments = order.all_adjustments.tax.additional
-      
+
       shipping_adjustments = order.all_adjustments.shipping
-      
+
       adjustment_label = []
       adjustment_costs = 0.0
-      
+
       order.all_adjustments.nonzero.eligible.each do |adjustment|
         next if (tax_adjustments + shipping_adjustments).include?(adjustment)
         adjustment_label << adjustment.label
-      
+
         adjustment_costs += adjustment.amount # Spree::Currency.convert(adjustment.amount, order.currency, 'RMB')
       end
-      
+
       subject = gateway_options[:subject] || order.number
-      subject += " #{adjustment_label.join(' | ')}"if adjustment_label.present?
+
       shipping_cost = order.shipments.to_a.sum(&:cost)
-      options = {
-        :out_trade_no      => out_trade_no,         # 20130801000001
-        :subject           => subject,   
-        :logistics_type    => 'POST',   #EXPRESS、POST、EMS
-        :logistics_fee     => shipping_cost,
-        :logistics_payment => 'BUYER_PAY',
-        :price             =>  amount,  
-        :currency          => "EUR",        
-        :quantity          => 1,
-        :discount          => adjustment_costs,
-        :return_url        => return_url, # https://writings.io/orders/20130801000001
-        :notify_url        => notify_url  # https://writings.io/orders/20130801000001/alipay_notify
-      }
+      # options = {
+      #   :out_trade_no      => out_trade_no,         # 20130801000001
+      #   :subject           => subject,   
+      #   :logistics_type    => 'POST',   #EXPRESS、POST、EMS
+      #   :logistics_fee     => shipping_cost,
+      #   :logistics_payment => 'BUYER_PAY',
+      #   :price             =>  amount,  
+      #   :currency          => "EUR",        
+      #   :quantity          => 1,
+      #   :discount          => adjustment_costs,
+      #   :return_url        => return_url, # https://writings.io/orders/20130801000001
+      #   :notify_url        => notify_url  # https://writings.io/orders/20130801000001/alipay_notify
+      # }
       options = {
         :out_trade_no      => out_trade_no,
         :subject           => subject,
         :currency          => "EUR",
-        :total_fee         => amount + shipping_cost ,
+        :total_fee         => amount + shipping_cost,
         :return_url        => return_url,
         :notify_url        => notify_url
       }

@@ -1,9 +1,15 @@
 spree_alipay_forex_trade
 ===================
 
-It is a wrapper for https://github.com/chloerei/alipay gem, using the https://github.com/spree/spree_gateway.
+This is a spree commerce (>2.4) payment gateway.
 
-Notice that the Alipay only allow CNY(or RMB) payments. Therefore, your site should support CNY currency.
+** this gem is not for production use**
+
+It uses the https://github.com/chloerei/alipay gem
+This gem allows for internation payments (EUR…)
+
+** The checkout integration is currently in progress an will change **
+
 
 Installation
 ===================
@@ -39,6 +45,7 @@ Usage
 
 ** Forex trade does autocapture. If you have to show a confirm page to the user
 before you redirect to Alipay you have to use /alipay/passthrough_forex_trade
+
 
 Add the AlipayXXX _(e.g. AlipayPartnerTrade) in Spree backend like normal payment. You need to input the _pid, _key, and _senderemail
 

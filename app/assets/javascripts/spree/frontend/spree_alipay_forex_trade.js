@@ -1,6 +1,4 @@
-//= require spree/frontend
-
-SpreeAlipayPayment = {
+SpreeAlipayForexTrade = {
   updateSaveAndContinueVisibility: function() {
     if (this.isButtonHidden()) {
       $(this).trigger('hideSaveAndContinue')
@@ -10,7 +8,7 @@ SpreeAlipayPayment = {
   },
   isButtonHidden: function () {
     paymentMethod = this.checkedPaymentMethod();
-    return (!$('#use_existing_card_yes:checked').length && SpreeAlipayPayment.paymentMethodID && paymentMethod.val() == SpreeAlipayPayment.paymentMethodID);
+    return (!$('#use_existing_card_yes:checked').length && SpreeAlipayForexTrade.paymentMethodID && paymentMethod.val() == SpreeAlipayForexTrade.paymentMethodID);
   },
   checkedPaymentMethod: function() {
     return $('div[data-hook="checkout_payment_step"] input[type="radio"][name="order[payments_attributes][][payment_method_id]"]:checked');
@@ -24,8 +22,8 @@ SpreeAlipayPayment = {
 }
 
 $(document).ready(function() {
-  SpreeAlipayPayment.updateSaveAndContinueVisibility();
+  SpreeAlipayForexTrade.updateSaveAndContinueVisibility();
   paymentMethods = $('div[data-hook="checkout_payment_step"] input[type="radio"]').click(function (e) {
-    SpreeAlipayPayment.updateSaveAndContinueVisibility();
+    SpreeAlipayForexTrade.updateSaveAndContinueVisibility();
   });
 })

@@ -1,5 +1,3 @@
 Spree::CheckoutController.class_eval do
-  helper Spree::AlipayHelper
-  
-  
+  helper Spree::AlipayForexHelper
 end

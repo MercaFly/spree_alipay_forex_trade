@@ -1,8 +1,8 @@
-module SpreeAlipayPayment
+module SpreeAlipayForexTrade
   class Engine < Rails::Engine
     require 'spree/core'
     isolate_namespace Spree
-    engine_name 'spree_alipay_payment'
+    engine_name 'spree_alipay_forex_trade'
 
     config.autoload_paths += %W(#{config.root}/lib)
 
@@ -20,7 +20,7 @@ module SpreeAlipayPayment
     config.to_prepare &method(:activate).to_proc
 
     initializer "spree.alipay_payment.payment_methods", :after => "spree.register.payment_methods" do |app|
-      app.config.spree.payment_methods << Spree::Gateway::AlipayPartnerTrade
+      app.config.spree.payment_methods << Spree::Gateway::AlipayForexTrade
     end
   end
 end

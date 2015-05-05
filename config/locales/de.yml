@@ -1,7 +1,7 @@
 de:
   spree:
-    alipay:
+    alipay_forex:
       click_and_pay: Bitte klicken Sie auf den Alipay button, um die Zahlung auszuführen
       error_non_rmb: Für Alipay muss die Währung auf CNY oder RMB gestellt sein
-      partner_trade: Partner Trade
+      forex_trade: Pay with Alipay
 

@@ -2,20 +2,20 @@
 lib = File.expand_path('../lib/', __FILE__)
 $:.unshift lib unless $:.include?(lib)
 
-require 'spree_alipay_payment/version'
+require 'spree_alipay_forex_trade/version'
 
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
-  s.name        = 'spree_alipay_payment'
-  s.version     = SpreeAlipayPayment::VERSION
-  s.summary     = 'Adds Alipay Payment as a Payment Method to Spree Commerce'
+  s.name        = 'spree_alipay_forex_trade'
+  s.version     = SpreeAlipayForexTrade::VERSION
+  s.summary     = 'Adds Alipay Forex Payment as a Payment Method to Spree Commerce'
   s.description = s.summary
   s.required_ruby_version = '>= 1.9.3'
 
-  s.author       = 'Arthur CHAN'
-  s.email        = 'arthur@talkgoal.com'
-  s.homepage     = 'http://www.talkgoal.com'
-  s.license      = %q{BSD-3}
+  s.author       = 'Thomas WInkler'
+  s.email        = 'tom@formrausch.com'
+  s.homepage     = 'http://www.formrausch.com'
+  s.license      = %q{MIT}
 
   s.files        = `git ls-files`.split("\n")
   s.test_files   = `git ls-files -- spec/*`.split("\n")

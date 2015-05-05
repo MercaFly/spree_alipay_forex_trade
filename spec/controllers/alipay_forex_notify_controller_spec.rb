@@ -1,12 +1,9 @@
 require 'spec_helper'
 
-describe Spree::AlipayNotifyController, type: :controller do
+describe Spree::AlipayForexNotifyController, type: :controller do
 
   # Regression tests for #55
   context "not from alipay" do
-
-    
-    
     context "notify_web" do
       it "raises ActiveRecord::RecordNotFound" do
         post :notify_web, :use_route => :spree 

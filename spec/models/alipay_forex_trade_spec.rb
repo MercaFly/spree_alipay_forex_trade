@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-describe Spree::Gateway::AlipayPartnerTrade do
+describe Spree::Gateway::AlipayForexTrade do
   
   
   before do
     Spree::Gateway.update_all(active: false)
-    @gateway = described_class.create!(name: 'Alipay PartnerTrade', environment: 'sandbox', active: true)
+    @gateway = described_class.create!(name: 'Alipay Forex Trade', environment: 'sandbox', active: true)
     @gateway.set_preference(:pid, 'TESTPID')
     @gateway.set_preference(:key, 'TESTKEY')
     @gateway.set_preference(:seller_email, 'tester@testing.com')
@@ -16,7 +16,7 @@ describe Spree::Gateway::AlipayPartnerTrade do
   let(:payment) {create(:payment, order: order, payment_method: @gateway, amount: 10.00) }
   let(:country) {create(:country, name: 'United States', iso_name: 'UNITED STATES', iso3: 'USA', iso: 'US', numcode: 840)}
   let(:state) {create(:state, name: 'Maryland', abbr: 'MD', country: country)}
-      
+
   let(:address) {create(:address,
         firstname: 'John',
         lastname:  'Doe',
@@ -30,9 +30,7 @@ describe Spree::Gateway::AlipayPartnerTrade do
       )}
 
   let(:order) {create(:order_with_totals, bill_address: address, ship_address: address)}
-      
 
-  
   context '.provider_class' do
     it 'is a Alipay Service' do
       expect(@gateway.provider_class).to eq ::Alipay::Service

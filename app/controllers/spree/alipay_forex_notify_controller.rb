@@ -18,7 +18,7 @@ module Spree
       out_trade_no = ipn_params[:out_trade_no] #WMCBRB7Y
       payment      = Spree::Payment.find_by_identifier(out_trade_no) || raise(ActiveRecord::RecordNotFound)
 
-      case params[:trade_status]
+      case ipn_params[:trade_status]
       when 'WAIT_BUYER_PAY'
         logger.info "Waiting for the payment"
       when 'WAIT_SELLER_SEND_GOODS'

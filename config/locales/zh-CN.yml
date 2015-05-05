@@ -1,6 +1,6 @@
 zh-CN:
   spree:
-    alipay:
+    alipay_forex:
       click_and_pay: 請按此支付寶以完成付款
       error_non_rmb: 如欲使用支付宝，请先选择人民币交易
       forex_trade: Pay with Alipay

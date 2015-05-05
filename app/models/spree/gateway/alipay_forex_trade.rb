@@ -65,8 +65,6 @@ module Spree
         :notify_url        => notify_url
       }
 
-      binding.pry
-
       provider.create_forex_trade(options)
     end
 

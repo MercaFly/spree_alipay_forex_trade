@@ -41,16 +41,23 @@ module Spree
 
       amount = order.amount
       tax_adjustments = order.all_adjustments.tax.additional
-
+      promotion_line_item_adjustments = order.line_item_adjustments.promotion
       shipping_adjustments = order.all_adjustments.shipping
 
       adjustment_label = []
       adjustment_costs = 0.0
+      promotion_costs = 0.0
 
       order.all_adjustments.nonzero.eligible.each do |adjustment|
         next if (tax_adjustments + shipping_adjustments).include?(adjustment)
         adjustment_label << adjustment.label
         adjustment_costs += adjustment.amount
+      end
+
+      promotion_line_item_adjustments.each do |adjustment|
+        next if (tax_adjustments + shipping_adjustments).include?(adjustment)
+        adjustment_label << adjustment.label
+        promotion_costs += adjustment.amount
       end
 
       subject       = gateway_options[:subject] || order.number
@@ -60,7 +67,7 @@ module Spree
         :out_trade_no      => out_trade_no,
         :subject           => subject,
         :currency          => "EUR",
-        :total_fee         => amount + shipping_cost,
+        :total_fee         => amount + shipping_cost + promotion_costs,
         :return_url        => return_url,
         :notify_url        => notify_url
       }

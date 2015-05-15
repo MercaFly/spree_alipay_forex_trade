@@ -44,9 +44,9 @@ module Spree
       promotion_line_item_adjustments = order.line_item_adjustments.promotion
       shipping_adjustments = order.all_adjustments.shipping
 
-      adjustment_label = []
-      adjustment_costs = 0.0
-      promotion_costs = 0.0
+      adjustment_label  = []
+      adjustment_costs  = 0.0
+      promotion_costs   = 0.0
 
       order.all_adjustments.nonzero.eligible.each do |adjustment|
         next if (tax_adjustments + shipping_adjustments).include?(adjustment)

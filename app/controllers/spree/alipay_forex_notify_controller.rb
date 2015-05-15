@@ -13,26 +13,37 @@ module Spree
     # confirm - The order is ready for a final review by the customer before being processed.
     # complete
     def notify_web
-      return render text: 'error' unless Alipay::Notify.verify?(ipn_params)
+      if Alipay::Notify.verify?(ipn_params)
+        puts "OK" * 50
 
-      out_trade_no = ipn_params[:out_trade_no] #WMCBRB7Y
-      payment      = Spree::Payment.find_by_identifier(out_trade_no) || raise(ActiveRecord::RecordNotFound)
+        out_trade_no = ipn_params[:out_trade_no] #WMCBRB7Y
+        status       = ipn_params[:trade_status] #TRADE_FINISHED
 
-      case ipn_params[:trade_status]
-      when 'WAIT_BUYER_PAY'
-        logger.info "Waiting for the payment"
-      when 'WAIT_SELLER_SEND_GOODS'
-        logger.info "Waiting for the seller to send the goods"
-      when 'TRADE_FINISHED'
-        payment.complete!
-        payment.order.next!
-      when 'TRADE_CLOSED'
-        logger.info "Trade closed"
-      else
-        logger.info "Received status signal: #{params[:trade_status]}"
+        payment      = Spree::Payment.find_by_identifier(out_trade_no) || raise(ActiveRecord::RecordNotFound)
+
+        handle_status status, payment
+
+        render text: 'success'
+      else 
+        puts "!" * 100
+        render text: 'error'
       end
+    end
 
-      render text: 'success'
+    # return url from alipay (gets IPN data as params)
+    def complete_forex_trade 
+      binding.pry
+
+      order_id     = params[:id]
+      out_trade_no = ipn_params[:out_trade_no] #WMCBRB7Y
+      status       = ipn_params[:trade_status] #TRADE_FINISHED
+
+      payment      = Spree::Payment.find_by_identifier(out_trade_no) || raise(ActiveRecord::RecordNotFound)
+      order        = Spree::Order.find_by_number(order_id)
+
+      handle_status status, payment
+
+      redirect_to spree.order_url(order, token: order.guest_token)
     end
 
     # Alipay status
@@ -49,7 +60,23 @@ module Spree
     def notify_refund
     end
 
-    private 
+    private
+
+    def handle_status(status, payment)
+      case status
+      when 'WAIT_BUYER_PAY'
+        logger.info "Waiting for the payment"
+      when 'WAIT_SELLER_SEND_GOODS'
+        logger.info "Waiting for the seller to send the goods"
+      when 'TRADE_FINISHED'
+        payment.complete! unless payment.completed?
+        payment.order.next! unless payment.order.complete?
+      when 'TRADE_CLOSED'
+        logger.info "Trade closed"
+      else
+        logger.info "Received status signal: #{status}"
+      end
+    end
 
     def ipn_params
       # except :controller_name, :action_name, :host, etc.

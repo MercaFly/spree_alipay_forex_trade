@@ -2,8 +2,10 @@ module Spree
   class AlipayForexController < StoreController
     ssl_allowed
 
+    # step from payment to confirm page
     def passthrough_forex_trade
       order = load_order
+      payment_method = Spree::PaymentMethod.find(params[:payment_method_id])
 
       payment = Spree::Payment.create order_id: order.id, amount: order.amount, payment_method_id: payment_method.id
       payment.started_processing!
@@ -12,7 +14,11 @@ module Spree
       # save reg token so the order is accessible via the alipay return_url
       session["registration"] = order.guest_token
 
-      order.next
+      puts ">>>"
+      puts order.state
+      order.next!
+      puts order.state
+      puts "<<<"
 
       # redirect to confirm page
       redirect_to spree.checkout_path
@@ -22,36 +28,39 @@ module Spree
     # this initiates the redirect to Alipay
     # POST /alipay/forex_trade?payment_method_id=4
     def forex_trade
-      order = load_order
+      alipay    = Spree::PaymentMethod.find(params[:payment_method_id])
 
-      payment   = payment_from_order(order)
-      pm_method = payment.payment_method
+      order     = load_order
+      subject   = transaction_subject(order)
 
-      forex_trade_url = pm_method.set_forex_trade payment.identifier,
-                                                  order,
-                                                  spree.order_url(order, token: order.guest_token), 
-                                                  notify_alipay_forex_url,
-                                                  { subject: transaction_subject(order) }
-      redirect_to forex_trade_url
+      payment     = order.payments.processing.first
+      identifier  = payment.identifier
+
+      return_path = alipay.auto_capture? ? 
+                      complete_forex_trade_url(order, token: order.guest_token) :
+                      spree.order_url(order, token: order.guest_token)
+        
+      logger.info "#" * 100
+      logger.info alipay.auto_capture?
+      logger.info return_path 
+      logger.info "#" * 100
+
+      url = alipay.set_forex_trade identifier,
+                            order,
+                            return_path,
+                            notify_alipay_forex_url,
+                            {subject:  subject}
+      redirect_to url
     end
-
 
     private
 
     def load_order
-      order = current_order || raise(ActiveRecord::RecordNotFound)
+      current_order || raise(ActiveRecord::RecordNotFound)
     end
 
-    def payment_from_order(order)
-      order.payments.processing.first
-    end
+    def return_path(order, payment_method)
 
-    def payment_method
-      Spree::PaymentMethod.find(params[:payment_method_id])
-    end
-
-    def provider
-      payment_method.provider
     end
 
     def transaction_subject(order)

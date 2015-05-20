@@ -32,8 +32,6 @@ module Spree
 
     # return url from alipay (gets IPN data as params)
     def complete_forex_trade 
-      binding.pry
-
       order_id     = params[:id]
       out_trade_no = ipn_params[:out_trade_no] #WMCBRB7Y
       status       = ipn_params[:trade_status] #TRADE_FINISHED

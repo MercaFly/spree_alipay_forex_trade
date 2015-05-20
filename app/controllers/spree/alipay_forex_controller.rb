@@ -16,7 +16,7 @@ module Spree
 
       puts ">>>"
       puts order.state
-      order.next!
+      order.next! if order.state == 'payment'
       puts order.state
       puts "<<<"
 

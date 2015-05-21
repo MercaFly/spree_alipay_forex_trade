@@ -16,10 +16,10 @@ module Spree
       if Alipay::Notify.verify?(ipn_params)
         puts "OK" * 50
 
-        out_trade_no = ipn_params[:out_trade_no] #WMCBRB7Y
+        (order_id, payment_identifier) = ipn_params[:out_trade_no].split("-") #R31231999-WMCBRB7Y
         status       = ipn_params[:trade_status] #TRADE_FINISHED
 
-        payment      = Spree::Payment.find_by_identifier(out_trade_no) || raise(ActiveRecord::RecordNotFound)
+        payment      = Spree::Payment.find_by_identifier(payment_identifier) || raise(ActiveRecord::RecordNotFound)
 
         handle_status status, payment
 
@@ -33,10 +33,11 @@ module Spree
     # return url from alipay (gets IPN data as params)
     def complete_forex_trade 
       order_id     = params[:id]
-      out_trade_no = ipn_params[:out_trade_no] #WMCBRB7Y
+      (order_id, payment_identifier) = ipn_params[:out_trade_no].split("-") #R31231999-WMCBRB7Y
+
       status       = ipn_params[:trade_status] #TRADE_FINISHED
 
-      payment      = Spree::Payment.find_by_identifier(out_trade_no) || raise(ActiveRecord::RecordNotFound)
+      payment      = Spree::Payment.find_by_identifier(payment_identifier) || raise(ActiveRecord::RecordNotFound)
       order        = Spree::Order.find_by_number(order_id)
 
       handle_status status, payment

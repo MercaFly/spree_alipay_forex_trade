@@ -39,35 +39,14 @@ module Spree
     def set_forex_trade(out_trade_no, order, return_url, notify_url, gateway_options={})
       raise unless preferred_pid && preferred_key && preferred_seller_email
 
-      amount = order.amount
-      tax_adjustments = order.all_adjustments.tax.additional
-      promotion_line_item_adjustments = order.line_item_adjustments.promotion
-      shipping_adjustments = order.all_adjustments.shipping
-
-      adjustment_label  = []
-      adjustment_costs  = 0.0
-      promotion_costs   = 0.0
-
-      order.all_adjustments.nonzero.eligible.each do |adjustment|
-        next if (tax_adjustments + shipping_adjustments).include?(adjustment)
-        adjustment_label << adjustment.label
-        adjustment_costs += adjustment.amount
-      end
-
-      promotion_line_item_adjustments.each do |adjustment|
-        next if (tax_adjustments + shipping_adjustments).include?(adjustment)
-        adjustment_label << adjustment.label
-        promotion_costs += adjustment.amount
-      end
-
-      subject       = gateway_options[:subject] || order.number
-      shipping_cost = order.shipments.to_a.sum(&:cost)
+      subject      = gateway_options[:subject] || order.number
+      total_amount = Spree::OrderAmountCalculator.new(order).total
 
       options = {
         :out_trade_no      => out_trade_no,
         :subject           => subject,
         :currency          => "EUR",
-        :total_fee         => amount + shipping_cost + promotion_costs,
+        :total_fee         => total_amount,
         :return_url        => return_url,
         :notify_url        => notify_url
       }

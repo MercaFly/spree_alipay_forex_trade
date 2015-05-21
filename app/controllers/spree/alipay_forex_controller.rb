@@ -5,9 +5,11 @@ module Spree
     # step from payment to confirm page
     def passthrough_forex_trade
       order = load_order
+
       payment_method = Spree::PaymentMethod.find(params[:payment_method_id])
 
-      payment = Spree::Payment.create order_id: order.id, amount: order.amount, payment_method_id: payment_method.id
+      amount  = Spree::OrderAmountCalculator.new(order).total
+      payment = Spree::Payment.create order_id: order.id, amount: amount, payment_method_id: payment_method.id
       payment.started_processing!
 
       # FIXME: this should be handled by spree
@@ -16,8 +18,11 @@ module Spree
 
       puts ">>>"
       puts order.state
-      order.next! if order.state == 'payment'
-      puts order.state
+      if order.next 
+        puts "New state: #{order.state}"
+      else 
+        puts order.errors.inspect
+      end
       puts "<<<"
 
       # redirect to confirm page
@@ -34,7 +39,10 @@ module Spree
       subject   = transaction_subject(order)
 
       payment     = order.payments.processing.first
-      identifier  = payment.identifier
+      
+      # this is displayed in the alipay transaction list -> easier to find
+      # the matching transaction in spree
+      identifier  = "#{order.number}-#{payment.identifier}"
 
       return_path = alipay.auto_capture? ? 
                       complete_forex_trade_url(order, token: order.guest_token) :

@@ -58,6 +58,12 @@ module Spree
                             return_path,
                             notify_alipay_forex_url,
                             {subject:  subject}
+      
+      # set payment state to checkout to complete the order (completion is otherwise not possible)
+      payment.state = "checkout"
+      payment.save
+      order.next! unless order.complete?
+
       redirect_to url
     end
 

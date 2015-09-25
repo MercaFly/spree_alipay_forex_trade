@@ -27,10 +27,9 @@ module Spree
       end
 
       @promotion_order_adjustments.each do |adjustment|
-        next if (@tax_adjustments + @shipping_adjustments).include?(adjustment)
+        next if (@tax_adjustments).include?(adjustment)
         sum += adjustment.amount
       end
-
       sum
     end
 

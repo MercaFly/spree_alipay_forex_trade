@@ -2,7 +2,7 @@ module Spree
   class OrderAmountCalculator
     def initialize(order)
       @order = order
-      
+
       @tax_adjustments = order.all_adjustments.tax.additional
       @promotion_line_item_adjustments = order.line_item_adjustments.promotion
       @shipping_adjustments = order.all_adjustments.shipping
@@ -10,11 +10,11 @@ module Spree
     end
 
     def amount
-      @order.amount 
+      @order.amount
     end
 
     def shipping_costs
-      @order.shipments.to_a.sum(&:cost)      
+      @order.shipments.to_a.sum(&:cost)
     end
 
 
@@ -44,8 +44,12 @@ module Spree
       sum
     end
 
-    def total
+    def total_without
       amount + shipping_costs + promotion_costs
+    end
+
+    def total
+      @order.total
     end
   end
 end

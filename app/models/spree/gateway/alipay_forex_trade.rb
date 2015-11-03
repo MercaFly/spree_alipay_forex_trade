@@ -51,7 +51,7 @@ module Spree
         :notify_url        => notify_url
       }
 
-      provider.create_forex_trade(options)
+      provider.create_forex_trade_url(options)
     end
 
     def refund(payment, amount)
@@ -63,7 +63,6 @@ module Spree
     def setup_alipay
       Alipay.pid = preferred_pid
       Alipay.key = preferred_key
-      Alipay.seller_id = preferred_seller_email
     end
   end
 end

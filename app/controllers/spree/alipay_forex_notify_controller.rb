@@ -30,10 +30,10 @@ module Spree
 
         handle_status status, payment
 
-        render text: 'success'
+        render text: 'success', status: 200
       else
         puts "!" * 100
-        render text: 'error'
+        render text: 'error', status: 409
       end
     end
 

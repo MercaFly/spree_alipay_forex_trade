@@ -1,3 +1,10 @@
+module Alipay
+  module Service
+    GATEWAY_URL = "http://123"
+    puts "***************** --------------------------------------------- ***********************************"
+  end
+end
+
 module Spree
   class AlipayForexNotifyController < ApplicationController
     skip_before_action :verify_authenticity_token
@@ -7,7 +14,7 @@ module Spree
     # WAIT_SELLER_SEND_GOODS(买家已付款，等待卖家发货)
     # WAIT_BUYER_CONFIRM_GOODS(卖家已发货，等待买家收货)
     # TRADE_FINISHED(买家已收货，交易完成)
-    # 
+    #
     # Spree Order status
     # payment - The store is ready to receive the payment information for the order.
     # confirm - The order is ready for a final review by the customer before being processed.
@@ -24,14 +31,14 @@ module Spree
         handle_status status, payment
 
         render text: 'success'
-      else 
+      else
         puts "!" * 100
         render text: 'error'
       end
     end
 
     # return url from alipay (gets IPN data as params)
-    def complete_forex_trade 
+    def complete_forex_trade
       order_id     = params[:id]
       (order_id, payment_identifier) = ipn_params[:out_trade_no].split("-") #R31231999-WMCBRB7Y
 

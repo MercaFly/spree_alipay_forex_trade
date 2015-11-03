@@ -63,7 +63,7 @@ module Spree
     def setup_alipay
       Alipay.pid = preferred_pid
       Alipay.key = preferred_key
-      Alipay.seller_email = preferred_seller_email
+      Alipay.seller_id = preferred_seller_email
     end
   end
 end

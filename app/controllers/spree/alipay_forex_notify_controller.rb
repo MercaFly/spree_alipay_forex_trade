@@ -103,6 +103,9 @@ module Spree
         logger.info params.inspect
         logger.info np.inspect
       end
+      #current_store_id get magically set by _our_ spree store
+      params.delete("current_store_id")
+      params
     end
 
   end

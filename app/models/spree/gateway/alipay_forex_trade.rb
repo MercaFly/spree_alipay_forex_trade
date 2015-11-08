@@ -51,7 +51,7 @@ module Spree
         :notify_url        => notify_url
       }
 
-      provider.create_forex_trade_url(options)
+      provider.create_forex_trade(options)
     end
 
     def refund(payment, amount)

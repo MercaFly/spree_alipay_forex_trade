@@ -1,10 +1,3 @@
-module Alipay
-  module Service
-    GATEWAY_URL = "http://123"
-    puts "***************** --------------------------------------------- ***********************************"
-  end
-end
-
 module Spree
   class AlipayForexNotifyController < ApplicationController
     skip_before_action :verify_authenticity_token

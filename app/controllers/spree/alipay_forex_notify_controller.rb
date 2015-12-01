@@ -13,11 +13,13 @@ module Spree
     # confirm - The order is ready for a final review by the customer before being processed.
     # complete
     def notify_web
-      if Alipay::Notify.verify?(ipn_params)
+      clean_params = filter_ipn_params(params)
+
+      if Alipay::Notify.verify?(clean_params)
         puts "OK" * 50
 
-        (order_id, payment_identifier) = ipn_params[:out_trade_no].split("-") #R31231999-WMCBRB7Y
-        status       = ipn_params[:trade_status] #TRADE_FINISHED
+        (_order_id, payment_identifier) = clean_params["out_trade_no"].split("-") #R31231999-WMCBRB7Y
+        status       = clean_params["trade_status"] #TRADE_FINISHED
 
         payment      = Spree::Payment.find_by_identifier(payment_identifier) || raise(ActiveRecord::RecordNotFound)
 
@@ -77,7 +79,7 @@ module Spree
       end
     end
 
-    def ipn_params
+    def filter_ipn_params(params)
       # except :controller_name, :action_name, :host, etc.
       # FOREX PING:
       # {
@@ -98,6 +100,9 @@ module Spree
       end
       #current_store_id get magically set by _our_ spree store
       params.delete("current_store_id")
+      puts "::::::::::::::::::::::::::::::::::::::::"
+      puts params.inspect
+      puts "/:::::::::::::::::::::::::::::::::::::::"      
       params
     end
 

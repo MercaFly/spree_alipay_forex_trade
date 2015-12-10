@@ -19,6 +19,9 @@ module Spree
       ::Alipay::Service
     end
 
+    def cancel(response)
+    end
+
     def auto_capture?
       true
     end

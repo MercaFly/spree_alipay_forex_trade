@@ -34,10 +34,11 @@ module Spree
 
     # return url from alipay (gets IPN data as params)
     def complete_forex_trade
-      order_id     = params[:id]
-      (order_id, payment_identifier) = ipn_params[:out_trade_no].split("-") #R31231999-WMCBRB7Y
+      clean_params = filter_ipn_params(params)
 
-      status       = ipn_params[:trade_status] #TRADE_FINISHED
+      order_id     = params[:id]
+      (_order_id, payment_identifier) = clean_params["out_trade_no"].split("-") #R31231999-WMCBRB7Y
+      status       = clean_params["trade_status"] #TRADE_FINISHED
 
       payment      = Spree::Payment.find_by_identifier(payment_identifier) || raise(ActiveRecord::RecordNotFound)
       order        = Spree::Order.find_by_number(order_id)

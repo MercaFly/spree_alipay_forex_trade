@@ -19,7 +19,15 @@ module Spree
       ::Alipay::Service
     end
 
+    def empty_success
+      Class.new do
+        def success?; true; end
+        def authorization; nil; end
+      end.new
+    end    
+
     def cancel(response)
+      empty_success
     end
 
     def auto_capture?
